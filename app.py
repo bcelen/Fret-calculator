@@ -5,21 +5,25 @@ import math
 st.title("THM Perde Ölçüleri")
 
 # Inputs
-colA, colB, colC, colD = st.columns([1.1,1.1,1,1])
+colA, colB, colC = st.columns([1.2,1.2,1.2])
 with colA:
     ref_freq = st.number_input("Referans frekans (Hz)", value=440.0, step=1.0)
 with colB:
     string_length = st.number_input("Tel uzunluğu (mm)", value=740.0, step=1.0)
 with colC:
-    koma_per_semitone = st.number_input("Bir yarım seste koma sayısı", value=4.5, step=0.1, min_value=1.0)
+    koma_cents = st.number_input("1 koma (cent cinsinden)", value=22.64, step=0.01, min_value=10.0, max_value=30.0)
+
+# Additional koma definitions
+colD, colE = st.columns([1,1])
 with colD:
     b2_komas = st.number_input("b² koması", value=2.0, step=0.5, min_value=0.0)
+with colE:
     s3_komas = st.number_input("♯³ koması", value=3.0, step=0.5, min_value=0.0)
 
-# Derived sizes
-KOMA_SIZE = 100.0 / koma_per_semitone
+# Helper for formatting with one decimal always
 fmt1 = lambda x: f"{x:.1f}"
 
+# Fret order
 ORDER = [
     "mi b", "mi b²", "mi",
     "fa", "fa♯³", "fa♯",
@@ -29,24 +33,26 @@ ORDER = [
     "mi b", "mi"
 ]
 
+# Compute cents for each label based on koma size
+# b and ♯ are full semitones (100c). b² and ♯³ adjusted by koma_cents × koma_count.
 def cents_of(label: str) -> float:
     l = label.replace(" ", "")
     if l == "mib": return 100.0
-    if l == "mib²": return 100.0 + b2_komas * KOMA_SIZE
+    if l == "mib²": return 100.0 + b2_komas * koma_cents
     if l == "mi": return 200.0
     if l == "fa": return 300.0
-    if l == "fa♯³": return 300.0 + s3_komas * KOMA_SIZE
+    if l == "fa♯³": return 300.0 + s3_komas * koma_cents
     if l == "fa♯": return 400.0
     if l == "sol": return 500.0
     if l == "lab": return 600.0
-    if l == "lab²": return 600.0 + b2_komas * KOMA_SIZE
+    if l == "lab²": return 600.0 + b2_komas * koma_cents
     if l == "la": return 700.0
     if l == "sib": return 800.0
-    if l == "sib²": return 800.0 + b2_komas * KOMA_SIZE
+    if l == "sib²": return 800.0 + b2_komas * koma_cents
     if l == "si": return 900.0
     if l == "do": return 1000.0
     if l == "reb": return 1100.0
-    if l == "reb²": return 1100.0 + b2_komas * KOMA_SIZE
+    if l == "reb²": return 1100.0 + b2_komas * koma_cents
     if l == "re": return 1200.0
     if l == "mib" and label.startswith("mi b"): return 1300.0
     if l == "mi" and label == "mi": return 1400.0
