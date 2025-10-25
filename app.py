@@ -23,8 +23,9 @@ with colE:
 # Helper for formatting with one decimal always
 fmt1 = lambda x: f"{x:.1f}"
 
-# Fret order
+# Fret order (starting with open Re)
 ORDER = [
+    "re",  # open string (0 cents)
     "mi b", "mi b²", "mi",
     "fa", "fa♯³", "fa♯",
     "sol", "la b", "la b²", "la",
@@ -34,9 +35,9 @@ ORDER = [
 ]
 
 # Compute cents for each label based on koma size
-# b and ♯ are full semitones (100c). b² and ♯³ adjusted by koma_cents × koma_count.
 def cents_of(label: str) -> float:
     l = label.replace(" ", "")
+    if l == "re": return 0.0
     if l == "mib": return 100.0
     if l == "mib²": return 100.0 + b2_komas * koma_cents
     if l == "mi": return 200.0
@@ -53,7 +54,7 @@ def cents_of(label: str) -> float:
     if l == "do": return 1000.0
     if l == "reb": return 1100.0
     if l == "reb²": return 1100.0 + b2_komas * koma_cents
-    if l == "re": return 1200.0
+    if l == "re" and label != "re": return 1200.0
     if l == "mib" and label.startswith("mi b"): return 1300.0
     if l == "mi" and label == "mi": return 1400.0
     return 0.0
