@@ -39,21 +39,21 @@ def cents_of(label: str) -> float:
     l = label.replace(" ", "")
     if l == "re": return 0.0
     if l == "mib": return 100.0
-    if l == "mib²": return 100.0 + b2_komas * koma_cents
+    if l == "mib²": return 200.0 - b2_komas * koma_cents
     if l == "mi": return 200.0
     if l == "fa": return 300.0
-    if l == "fa♯³": return 300.0 + s3_komas * koma_cents
+    if l == "fa♯³": return 400.0 - s3_komas * koma_cents
     if l == "fa♯": return 400.0
     if l == "sol": return 500.0
     if l == "lab": return 600.0
-    if l == "lab²": return 600.0 + b2_komas * koma_cents
+    if l == "lab²": return 700.0 - b2_komas * koma_cents
     if l == "la": return 700.0
     if l == "sib": return 800.0
-    if l == "sib²": return 800.0 + b2_komas * koma_cents
+    if l == "sib²": return 900.0 - b2_komas * koma_cents
     if l == "si": return 900.0
     if l == "do": return 1000.0
     if l == "reb": return 1100.0
-    if l == "reb²": return 1100.0 + b2_komas * koma_cents
+    if l == "reb²": return 1200.0 - b2_komas * koma_cents
     if l == "re" and label != "re": return 1200.0
     if l == "mib" and label.startswith("mi b"): return 1300.0
     if l == "mi" and label == "mi": return 1400.0
