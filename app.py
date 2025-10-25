@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import math
 
+st.set_page_config(layout="wide")
 st.title("THM Perde Ölçüleri")
 
 # Inputs
@@ -13,17 +14,15 @@ with colB:
 with colC:
     koma_cents = st.number_input("1 koma (cent cinsinden)", value=22.64, step=0.01, min_value=10.0, max_value=30.0)
 
-# Hidden koma definitions
+# Hidden koma settings
 b2_komas = 2.0
 s3_komas = 2.0
 
-# Helper for formatting with one decimal always
 fmt1 = lambda x: f"{x:.1f}"
 
 # Fret order (starting with open Re)
 ORDER = [
-    "re",  # open string (0 cents)
-    "mi b", "mi b²", "mi",
+    "re", "mi b", "mi b²", "mi",
     "fa", "fa♯³", "fa♯",
     "sol", "la b", "la b²", "la",
     "si b", "si b²", "si",
@@ -32,9 +31,10 @@ ORDER = [
 ]
 
 # Compute cents for each label based on koma size
-def cents_of(label: str) -> float:
+def cents_of(label: str, re_count: int) -> float:
     l = label.replace(" ", "")
-    if l == "re": return 0.0
+    if l == "re":
+        return 0.0 if re_count == 0 else 1200.0
     if l == "mib": return 100.0
     if l == "mib²": return 200.0 - b2_komas * koma_cents
     if l == "mi": return 200.0
@@ -51,9 +51,6 @@ def cents_of(label: str) -> float:
     if l == "do": return 1000.0
     if l == "reb": return 1100.0
     if l == "reb²": return 1200.0 - b2_komas * koma_cents
-    if l == "re" and label != "re": return 1200.0
-    if l == "mib" and label.startswith("mi b"): return 1300.0
-    if l == "mi" and label == "mi": return 1400.0
     return 0.0
 
 def freq_from_cents(c):
@@ -64,8 +61,13 @@ def nut_to_fret(c):
 
 rows = []
 prev_dist = 0.0
+re_seen = 0
 for lab in ORDER:
-    c = cents_of(lab)
+    if lab.startswith("re"):
+        c = cents_of(lab, re_seen)
+        re_seen += 1
+    else:
+        c = cents_of(lab, re_seen)
     f = freq_from_cents(c)
     d = nut_to_fret(c)
     spacing = d - prev_dist
@@ -79,8 +81,6 @@ for lab in ORDER:
     })
 
 df = pd.DataFrame(rows, columns=["Perde", "Cents", "Frekans (Hz)", "Uzaklık (mm)", "Aralık (mm)"])
-
-# Display a larger, scroll-free table
 st.dataframe(df, hide_index=True, use_container_width=True, height=800)
 
 csv = df.to_csv(index=False).encode('utf-8')
