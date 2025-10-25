@@ -13,7 +13,7 @@ with colB:
 with colC:
     koma_cents = st.number_input("1 koma (cent cinsinden)", value=22.64, step=0.01, min_value=10.0, max_value=30.0)
 
-# Hidden koma definitions (invisible, fixed values)
+# Hidden koma definitions
 b2_komas = 2.0
 s3_komas = 2.0
 
@@ -79,7 +79,9 @@ for lab in ORDER:
     })
 
 df = pd.DataFrame(rows, columns=["Perde", "Cents", "Frekans (Hz)", "Uzaklık (mm)", "Aralık (mm)"])
-st.dataframe(df, hide_index=True, use_container_width=True)
+
+# Display a larger, scroll-free table
+st.dataframe(df, hide_index=True, use_container_width=True, height=800)
 
 csv = df.to_csv(index=False).encode('utf-8')
 st.download_button("Tabloyu indir (CSV)", csv, "thm_perde_olculeri.csv", "text/csv", key="download-csv")
