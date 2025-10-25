@@ -13,12 +13,9 @@ with colB:
 with colC:
     koma_cents = st.number_input("1 koma (cent cinsinden)", value=22.64, step=0.01, min_value=10.0, max_value=30.0)
 
-# Additional koma definitions
-colD, colE = st.columns([1,1])
-with colD:
-    b2_komas = st.number_input("b² koması", value=2.0, step=0.5, min_value=0.0)
-with colE:
-    s3_komas = st.number_input("♯³ koması", value=3.0, step=0.5, min_value=0.0)
+# Hidden koma definitions (invisible, fixed values)
+b2_komas = 2.0
+s3_komas = 2.0
 
 # Helper for formatting with one decimal always
 fmt1 = lambda x: f"{x:.1f}"
